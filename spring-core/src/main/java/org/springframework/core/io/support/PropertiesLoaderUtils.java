@@ -133,9 +133,11 @@ public abstract class PropertiesLoaderUtils {
 		InputStream is = resource.getInputStream();
 		try {
 			String filename = resource.getFilename();
+			//加载.xml文件的资源文件
 			if (filename != null && filename.endsWith(XML_FILE_EXTENSION)) {
 				props.loadFromXML(is);
 			}
+			//加载非.xml文件的资源文件
 			else {
 				props.load(is);
 			}

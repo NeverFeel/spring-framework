@@ -115,15 +115,19 @@ public abstract class BeanUtils {
 	 */
 	public static <T> T instantiateClass(Class<T> clazz) throws BeanInstantiationException {
 		Assert.notNull(clazz, "Class must not be null");
+		//判断类型是否是一个接口，如果是，则抛出异常
 		if (clazz.isInterface()) {
 			throw new BeanInstantiationException(clazz, "Specified class is an interface");
 		}
 		try {
+			//根据声明的无参构造函数，进行实例化
 			return instantiateClass(clazz.getDeclaredConstructor());
 		}
 		catch (NoSuchMethodException ex) {
+			//kotlin的获取构造函数？
 			Constructor<T> ctor = findPrimaryConstructor(clazz);
 			if (ctor != null) {
+				//根据给定的构造函数，进行实例化
 				return instantiateClass(ctor);
 			}
 			throw new BeanInstantiationException(clazz, "No default constructor found", ex);
@@ -167,7 +171,9 @@ public abstract class BeanUtils {
 	public static <T> T instantiateClass(Constructor<T> ctor, Object... args) throws BeanInstantiationException {
 		Assert.notNull(ctor, "Constructor must not be null");
 		try {
+			//对于私有的构造函数，设置setAccessible(true)
 			ReflectionUtils.makeAccessible(ctor);
+			//反射创建改类型的实例对象
 			return (KotlinDetector.isKotlinReflectPresent() && KotlinDetector.isKotlinType(ctor.getDeclaringClass()) ?
 					KotlinDelegate.instantiateClass(ctor, args) : ctor.newInstance(args));
 		}
