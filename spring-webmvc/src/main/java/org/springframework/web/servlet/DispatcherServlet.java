@@ -277,14 +277,22 @@ public class DispatcherServlet extends FrameworkServlet {
 	/** Additional logger to use when no mapped handler is found for a request. */
 	protected static final Log pageNotFoundLogger = LogFactory.getLog(PAGE_NOT_FOUND_LOG_CATEGORY);
 
+	/**
+	 * 默认的策略集合
+	 */
 	private static final Properties defaultStrategies;
 
+	//DispatcherServlet初始化的时候，下面的静态代码块会执行。
+	// 从DispatcherServlet.properties文件中加载默认的策略实现。这是严格的内置的，
+	// 并且不打算被应用开发者定制
 	static {
 		// Load default strategy implementations from properties file.
 		// This is currently strictly internal and not meant to be customized
 		// by application developers.
 		try {
+			//读取DispatcherServlet.properties文件中配置的策略
 			ClassPathResource resource = new ClassPathResource(DEFAULT_STRATEGIES_PATH, DispatcherServlet.class);
+			//加载资源文件中的属性
 			defaultStrategies = PropertiesLoaderUtils.loadProperties(resource);
 		}
 		catch (IOException ex) {
@@ -499,14 +507,23 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * <p>May be overridden in subclasses in order to initialize further strategy objects.
 	 */
 	protected void initStrategies(ApplicationContext context) {
+		// 初始化 MultipartResolver
 		initMultipartResolver(context);
+		// 初始化 LocaleResolver
 		initLocaleResolver(context);
+		// 初始化 ThemeResolver
 		initThemeResolver(context);
+		// 初始化 HandlerMappings
 		initHandlerMappings(context);
+		// 初始化 HandlerAdapters
 		initHandlerAdapters(context);
+		// 初始化 HandlerExceptionResolvers
 		initHandlerExceptionResolvers(context);
+		// 初始化 RequestToViewNameTranslator
 		initRequestToViewNameTranslator(context);
+		// 初始化 ViewResolvers
 		initViewResolvers(context);
+		// 初始化 FlashMapManager
 		initFlashMapManager(context);
 	}
 
